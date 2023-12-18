@@ -1,8 +1,10 @@
 import { string } from "prop-types";
 import { useFormContext } from "react-hook-form";
+import { processInvalidation } from "../../persistence/sessionStorage";
 
 export const Input = ({ label, name, type }) => {
   const {
+    setValue,
     register,
     formState: { defaultValues },
   } = useFormContext();
@@ -11,7 +13,10 @@ export const Input = ({ label, name, type }) => {
     <label>
       {label}
       <input
-        {...register(name, { shouldUnregister: true })}
+        {...register(name, {
+          shouldUnregister: true,
+          onChange: ({ target }) => processInvalidation({ target, setValue }),
+        })}
         defaultValue={defaultValues?.[name]}
         type={type}
       />

@@ -1,20 +1,20 @@
 import { func, node, object, string } from "prop-types";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { synchronizeDataLocalWithPersistence } from "../../persistence/sessionStorage";
+import {
+  synchronizeLocalAndRemoteData,
+  getSessionStorageFormValues,
+} from "../../persistence/sessionStorage";
 
 export const Form = ({ id, initialValues, children, onSubmit }) => {
   const methods = useForm({
     // Ici définir si source de vérité = local ou sessionStorage, possibilité d'écrase aussi {...initialValues, ...sessionStorage}
-    defaultValues: initialValues || JSON.parse(sessionStorage.getItem(id)),
+    defaultValues: initialValues || getSessionStorageFormValues(id),
   });
 
   const values = methods.watch();
 
-  useEffect(
-    () => synchronizeDataLocalWithPersistence(id, values),
-    [id, values]
-  );
+  useEffect(() => synchronizeLocalAndRemoteData(id, values), [id, values]);
 
   return (
     <FormProvider {...methods}>

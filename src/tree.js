@@ -4,9 +4,9 @@ export const ADRESS_FORM = {
   id: "adressForm",
   title: "Informations d'adresse",
   items: [
-    { label: "Adresse :", name: "adress", item: 301 },
-    { label: "Commune :", name: "town", item: 302 },
-    { label: "Code postal :", name: "zipcode", item: 303 },
+    { label: "Adresse :", name: "adress", itemId: 301, group: 1 },
+    { label: "Commune :", name: "town", itemId: 302, group: 1 },
+    { label: "Code postal :", name: "zipcode", itemId: 303 },
   ],
   defaultValues: {
     town: "Niort",
