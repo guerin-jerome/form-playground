@@ -1,33 +1,34 @@
-export const IdentityForm = () => (
-  <>
-    <h1>Informations d&apos;identité</h1>
-    <form>
-      <fieldset>
-        <legend>Sélectionner votre civilité :</legend>
+import { useNavigate } from "react-router-dom";
+import { StepForm } from "../atoms/StepForm";
+import { Steps } from "../../tree";
+import { Input } from "../atoms/Input";
 
-        <div>
-          <input type="radio" id="male" name="male" value="male" checked />
-          <label htmlFor="male">Homme</label>
-        </div>
+export const IdentityForm = () => {
+  const navigate = useNavigate();
 
-        <div>
-          <input type="radio" id="female" name="female" value="female" />
-          <label htmlFor="female">Femme</label>
-        </div>
+  const handleSubmitIdentityForm = (data) => {
+    console.debug("Submit identity form with data => ", data);
+    navigate("/birth");
+  };
 
-        <div>
-          <input type="radio" id="other" name="other" value="other" />
-          <label htmlFor="other">Autre</label>
-        </div>
-      </fieldset>
-
-      <label htmlFor="name">Nom :</label>
-      <input type="text" id="name" name="name" />
-
-      <label htmlFor="firstname">Prénom :</label>
-      <input type="text" id="firstname" name="firstname" />
-
-      <button type="submit">Valider</button>
-    </form>
-  </>
-);
+  return (
+    <>
+      <h1>Informations d&apos;identité</h1>
+      <StepForm id={Steps.identity.name} onSubmit={handleSubmitIdentityForm}>
+        <Input
+          label="Prénom :"
+          name="firstname"
+          type="text"
+          options={{ required: true }}
+        />
+        <Input
+          label="Nom :"
+          name="name"
+          type="text"
+          options={{ required: true }}
+        />
+        <button type="submit">Soumettre</button>
+      </StepForm>
+    </>
+  );
+};

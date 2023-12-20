@@ -2,7 +2,7 @@
 
 L'idée de ce projet est d'être un bac à sable autour d'un projet utilisant `react-hook-form` et devant persister ces données en `sessionStorage`.
 
-Nous allons essayer de trouver un bon mix entre simplicité et évolutivé/flexibilité.
+Nous allons essayer de trouver un bon mix entre simplicité et évolutivé/flexibilité. Le but également est d'avoir un couplage faible entre toutes les couches de l'application.
 
 ## Règles à respecter
 

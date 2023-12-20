@@ -12,7 +12,7 @@ export const Input = ({ label, name, type, options }) => {
       <label>
         {label}
         <input
-          {...register(name, ...options)}
+          {...register(name, { ...options })}
           defaultValue={defaultValues?.[name]}
           type={type}
         />

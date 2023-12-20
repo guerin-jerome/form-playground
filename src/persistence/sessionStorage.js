@@ -5,13 +5,14 @@ const SESSION_STORAGE_KEYS = {
 };
 
 const getOnSessionStorage = ({ storageKey, itemKey }) =>
-  JSON.parse(sessionStorage.getItem(storageKey))?.[itemKey];
+  JSON.parse(sessionStorage.getItem(`${storageKey}.${itemKey}`));
 
 const removeOnSessionStorage = ({ storageKey, itemKey }) =>
   sessionStorage.removeItem(`${storageKey}.${itemKey}`);
 
 const setOnSessionStorage = ({ storageKey, itemKey, data }) => {
-  const sessionStorageData = JSON.parse(sessionStorage.getItem(storageKey));
+  const sessionStorageData =
+    JSON.parse(sessionStorage.getItem(`${storageKey}.${itemKey}`)) || {};
   const newData = {
     ...sessionStorageData,
     ...data,
@@ -26,10 +27,10 @@ export const getSessionStorageFormValues = (itemKey) =>
     itemKey,
   });
 
-const setSessionStorageFormValues = (itemKey, data) =>
+const setSessionStorageFormValues = (pageId, data) =>
   setOnSessionStorage({
     storageKey: SESSION_STORAGE_KEYS.formValues,
-    itemKey,
+    itemKey: pageId,
     data,
   });
 
@@ -41,17 +42,18 @@ const resetNextStepsFormValuesAndData = (id) => {
     if (page.name !== id && page.step > step) {
       removeOnSessionStorage({
         storageKey: SESSION_STORAGE_KEYS.formValues,
-        itemKey: id,
+        itemKey: page.name,
       });
     }
   });
 };
 
-export const synchronizeLocalAndStorageData = (id, data) => {
+// Cf. Règle 1 - README
+export const synchronizeLocalAndStorageData = (pageId, data) => {
   if (
-    JSON.stringify(data) !== JSON.stringify(getSessionStorageFormValues(id))
+    JSON.stringify(data) !== JSON.stringify(getSessionStorageFormValues(pageId))
   ) {
-    setSessionStorageFormValues(id, data);
+    setSessionStorageFormValues(pageId, data);
   }
-  resetNextStepsFormValuesAndData(id);
+  resetNextStepsFormValuesAndData(pageId);
 };

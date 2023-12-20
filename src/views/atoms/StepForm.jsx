@@ -11,10 +11,14 @@ export const StepForm = ({ id, defaultValues, children, onSubmit }) => {
     defaultValues: getSessionStorageFormValues(id) || defaultValues,
   });
 
-  const values = methods.watch();
-
-  // Cf. Règle 1 - README
-  useEffect(() => synchronizeLocalAndStorageData(id, values), [id, values]);
+  useEffect(() => {
+    const subscription = methods.watch((value, { type }) => {
+      if (type === "change") {
+        synchronizeLocalAndStorageData(id, value);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [methods, id]);
 
   return (
     <FormProvider {...methods}>
