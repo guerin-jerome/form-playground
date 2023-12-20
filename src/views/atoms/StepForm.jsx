@@ -2,19 +2,19 @@ import { func, node, object, string } from "prop-types";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import {
-  synchronizeLocalAndRemoteData,
   getSessionStorageFormValues,
+  synchronizeLocalAndStorageData,
 } from "../../persistence/sessionStorage";
 
-export const Form = ({ id, initialValues, children, onSubmit }) => {
+export const StepForm = ({ id, defaultValues, children, onSubmit }) => {
   const methods = useForm({
-    // Ici définir si source de vérité = local ou sessionStorage, possibilité d'écrase aussi {...initialValues, ...sessionStorage}
-    defaultValues: initialValues || getSessionStorageFormValues(id),
+    defaultValues: getSessionStorageFormValues(id) || defaultValues,
   });
 
   const values = methods.watch();
 
-  useEffect(() => synchronizeLocalAndRemoteData(id, values), [id, values]);
+  // Cf. Règle 1 - README
+  useEffect(() => synchronizeLocalAndStorageData(id, values), [id, values]);
 
   return (
     <FormProvider {...methods}>
@@ -23,14 +23,14 @@ export const Form = ({ id, initialValues, children, onSubmit }) => {
   );
 };
 
-Form.propTypes = {
+StepForm.propTypes = {
   id: string.isRequired,
   children: node.isRequired,
-  initialValues: object,
+  defaultValues: object,
   onSubmit: func,
 };
 
-Form.defaultProps = {
-  initialValues: undefined,
+StepForm.defaultProps = {
+  defaultValues: undefined,
   onSubmit: () => {},
 };
