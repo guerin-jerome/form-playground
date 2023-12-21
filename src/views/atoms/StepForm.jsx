@@ -6,23 +6,36 @@ import {
   synchronizeLocalAndStorageData,
 } from "../../persistence/sessionStorage";
 
-export const StepForm = ({ id, defaultValues, children, onSubmit }) => {
+export const StepForm = ({ id, defaultValues, children, onSubmit, rules }) => {
   const methods = useForm({
     defaultValues: getSessionStorageFormValues(id) || defaultValues,
   });
 
+  const { watch, resetField, handleSubmit } = methods;
+
   useEffect(() => {
-    const subscription = methods.watch((value, { type }) => {
-      if (type === "change") {
-        synchronizeLocalAndStorageData(id, value);
+    const subscription = watch((value, { type, name }) => {
+      if (type !== "change" && type) {
+        console.error("nouveau type ", type);
       }
+
+      const newValues = { ...value };
+
+      if (rules?.[name]) {
+        rules[name].forEach((element) => {
+          delete newValues[element];
+          resetField(element);
+        });
+      }
+
+      synchronizeLocalAndStorageData(id, newValues);
     });
     return () => subscription.unsubscribe();
-  }, [methods, id]);
+  }, []);
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
+      <form onSubmit={handleSubmit(onSubmit)}>{children}</form>
     </FormProvider>
   );
 };
@@ -32,6 +45,7 @@ StepForm.propTypes = {
   children: node.isRequired,
   defaultValues: object,
   onSubmit: func,
+  rules: object,
 };
 
 StepForm.defaultProps = {

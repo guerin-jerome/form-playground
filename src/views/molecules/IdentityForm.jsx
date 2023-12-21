@@ -11,10 +11,18 @@ export const IdentityForm = () => {
     navigate("/birth");
   };
 
+  const identityFormInvalidationRules = {
+    firstname: ["name"],
+  };
+
   return (
     <>
       <h1>Informations d&apos;identité</h1>
-      <StepForm id={Steps.identity.name} onSubmit={handleSubmitIdentityForm}>
+      <StepForm
+        id={Steps.identity.name}
+        onSubmit={handleSubmitIdentityForm}
+        rules={identityFormInvalidationRules}
+      >
         <Input
           label="Prénom :"
           name="firstname"

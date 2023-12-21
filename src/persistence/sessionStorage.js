@@ -54,6 +54,6 @@ export const synchronizeLocalAndStorageData = (pageId, data) => {
     JSON.stringify(data) !== JSON.stringify(getSessionStorageFormValues(pageId))
   ) {
     setSessionStorageFormValues(pageId, data);
+    resetNextStepsFormValuesAndData(pageId);
   }
-  resetNextStepsFormValuesAndData(pageId);
 };
