@@ -27,6 +27,10 @@ const router = createBrowserRouter([
     path: "step1",
     element: <StepForm />,
   },
+  {
+    path: "step2",
+    element: <StepForm />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

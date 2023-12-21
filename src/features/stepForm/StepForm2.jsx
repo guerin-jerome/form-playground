@@ -5,13 +5,9 @@ import { Form } from "../../views/molecules/Form";
 
 const stepFormRules = {
     "layer1.input1": [
-        "layer1.input3"
-    ] ,
-    "layer1.input2": [
         "layer1.input3",
-    ] , 
-    "layer1.input3": [
-        "layer2.input3"
+        "layer1.input2", 
+        "layer2.input2"
     ]
 }
 
@@ -24,7 +20,7 @@ export const StepForm = () => {
   return (
     <>
       <h1>step form</h1>
-        <Form id="stepForm" onSubmit={onSubmit} rules={stepFormRules}>
+      <Form id="stepForm" onSubmit={onSubmit} rules={stepFormRules}>
           <Layer1 /> <br />
           <Layer2 /> <br />
           <Layer3 /> <br />

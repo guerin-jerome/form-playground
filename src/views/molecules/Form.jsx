@@ -16,17 +16,20 @@ export const Form = ({ id, defaultValues, children, onSubmit, rules}) => {
   useEffect(() => {
     const subscription = watch((value, { type, name }) => {
 
-      if (type === "change") {
-        console.log(value, "value Form")
-        console.log(name, "name Form")
-        console.log(type, "type Form")
-  
-        if(rules[name]) rules[name].forEach(element => {
-          console.log(element, "element")
-          resetField(element)
-        });
-        synchronizeLocalAndStorageData(id, value);
+      if(type !== "change" && type) {
+        console.error("nouveau type ", type)
       }
+
+      console.log(type, "type Form")
+      console.log(name, "name Form")   
+      console.log(value, "value Form")
+  
+      if(rules[name]) rules[name].forEach(element => {
+        console.log(element, "element")
+        resetField(element)
+      });
+    
+      synchronizeLocalAndStorageData(id, value);
     });
     return () => subscription.unsubscribe();
   }, [watch, id]);

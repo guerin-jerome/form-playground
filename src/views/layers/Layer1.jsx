@@ -5,7 +5,7 @@ export const Layer1 = () => {
     const [isSumited, setIsSumited] = useState(false)
     const {register, trigger, watch} = useFormContext()
 
-    const input = watch("layer1")
+    const input = watch("vehicule")
 
     useEffect(() => {
         if(input) {
@@ -13,7 +13,7 @@ export const Layer1 = () => {
         }
     }, [])
 
-    const handleClick = () => trigger("layer1").then(isValid => {
+    const handleClick = () => trigger("vehicule").then(isValid => {
         setIsSumited(isValid)
     } )
 
