@@ -23,7 +23,9 @@ export const Layer3 = () => {
            {!isSumited && ( 
                 <>
                 Form 3<br />
-                    <input type="text" {...register("input3", {required: true})}/><br />
+                    <input type="text" {...register("layer3.input1", {required: true})}/><br />
+                    <input type="text" {...register("layer3.input2", {required: true})}/><br />
+                    <input type="text" {...register("layer3.input3", {required: true})}/><br />
                     <input type="button" value="valider" onClick={handleClick}/><br />
                 </>
             )}

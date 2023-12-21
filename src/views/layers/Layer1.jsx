@@ -5,7 +5,7 @@ export const Layer1 = () => {
     const [isSumited, setIsSumited] = useState(false)
     const {register, trigger, watch} = useFormContext()
 
-    const input = watch("input1")
+    const input = watch("layer1")
 
     useEffect(() => {
         if(input) {
@@ -13,17 +13,18 @@ export const Layer1 = () => {
         }
     }, [])
 
-    const handleClick = () => trigger("input1").then(isValid => {
+    const handleClick = () => trigger("layer1").then(isValid => {
         setIsSumited(isValid)
     } )
-
 
     return (
         <>
            {((!isSumited && !input) || !isSumited )&& ( 
                 <>
                 Form 1 <br />
-                    <input type="text" {...register("input1", {required: true })}/><br />
+                    <input type="text" {...register("layer1.input1", {required: true })}/><br />
+                    <input type="text" {...register("layer1.input2", {required: true })}/><br />
+                    <input type="text" {...register("layer1.input3", {required: true })}/><br />
                     <input type="button" value="valider" onClick={handleClick}/>
                     <br />
                 </>
