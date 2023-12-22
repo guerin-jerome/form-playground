@@ -2,6 +2,7 @@ import { COURSE } from "../tree";
 
 const SESSION_STORAGE_KEYS = {
   formValues: "form-values",
+  formData: "form-data",
 };
 
 const getOnSessionStorage = ({ storageKey, itemKey }) =>
@@ -19,6 +20,12 @@ export const getSessionStorageFormValues = (itemKey) =>
     itemKey,
   });
 
+export const getSessionStorageFormData = (itemKey) =>
+  getOnSessionStorage({
+    storageKey: SESSION_STORAGE_KEYS.formData,
+    itemKey,
+  });
+
 const setSessionStorageFormValues = (pageId, data) =>
   setOnSessionStorage({
     storageKey: SESSION_STORAGE_KEYS.formValues,
@@ -26,7 +33,22 @@ const setSessionStorageFormValues = (pageId, data) =>
     data,
   });
 
-// Cf. Règle 2 - README
+export const setSessionStorageFormData = ({ itemKey, data }) => {
+  const sessionStorageData =
+    JSON.parse(
+      sessionStorage.getItem(`${SESSION_STORAGE_KEYS.formData}.${itemKey}`)
+    ) || {};
+  const newData = {
+    ...sessionStorageData,
+    ...data,
+  };
+  setOnSessionStorage({
+    storageKey: SESSION_STORAGE_KEYS.formData,
+    itemKey,
+    data: newData,
+  });
+};
+
 const resetNextStepsFormValuesAndData = (id) => {
   const step = COURSE.find((page) => page.name === id)?.step;
 
@@ -40,7 +62,6 @@ const resetNextStepsFormValuesAndData = (id) => {
   });
 };
 
-// Cf. Règle 1 - README
 export const synchronizeLocalAndStorageData = (pageId, data) => {
   if (
     JSON.stringify(data) !== JSON.stringify(getSessionStorageFormValues(pageId))

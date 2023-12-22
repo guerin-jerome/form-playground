@@ -6,9 +6,12 @@ import {
   synchronizeLocalAndStorageData,
 } from "../../persistence/sessionStorage";
 
+/**
+ * @deprecated
+ */
 export const Form = ({ id, defaultValues, children, onSubmit, rules }) => {
   const methods = useForm({
-    values: getSessionStorageFormValues(id) || defaultValues,
+    defaultValues: getSessionStorageFormValues(id) || defaultValues,
   });
 
   const { watch, setValue, handleSubmit } = methods;

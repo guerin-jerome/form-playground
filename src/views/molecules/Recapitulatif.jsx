@@ -2,7 +2,7 @@ import { getSessionStorageFormValues } from "../../persistence/sessionStorage";
 import { Steps } from "../../tree";
 
 export const Recapitulatif = () => {
-  const { firstname, name, gender } =
+  const { firstname, name, surname } =
     getSessionStorageFormValues(Steps.identity.name) || {};
   const { birthdate, birthplace } =
     getSessionStorageFormValues(Steps.birth.name) || {};
@@ -15,9 +15,9 @@ export const Recapitulatif = () => {
       <ul>
         <li>Identité</li>
         <ul>
-          <li>Civilité : {gender}</li>
           <li>Nom : {name}</li>
           <li>Prénom : {firstname}</li>
+          <li>Surnom : {surname}</li>
         </ul>
         <li>Naissance</li>
         <ul>

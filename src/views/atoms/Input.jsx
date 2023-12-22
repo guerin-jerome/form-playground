@@ -11,13 +11,21 @@ export const Input = ({ label, name, type, options }) => {
     <>
       <label>
         {label}
+        <br />
         <input
           {...register(name, { ...options })}
           defaultValue={defaultValues?.[name]}
           type={type}
+          style={{ marginBottom: "10px" }}
         />
       </label>
-      {errors?.[name] && <p>{errors?.[name]?.message}</p>}
+      <br />
+      {errors?.[name] && (
+        <p>
+          {errors?.[name]?.message}
+          <br />
+        </p>
+      )}
     </>
   );
 };
