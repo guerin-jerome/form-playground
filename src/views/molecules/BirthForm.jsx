@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { StepForm } from "../atoms/StepForm";
+import { Form } from "../atoms/StepForm";
 import { Steps } from "../../tree";
 import { Input } from "../atoms/Input";
 
@@ -14,7 +14,7 @@ export const BirthForm = () => {
   return (
     <>
       <h1>Informations de naissance</h1>
-      <StepForm id={Steps.birth.name} onSubmit={handleSubmitBirthForm}>
+      <Form id={Steps.birth.name} onSubmit={handleSubmitBirthForm}>
         <Input
           label="Date de naissance :"
           name="birthdate"
@@ -28,7 +28,7 @@ export const BirthForm = () => {
           options={{ required: true }}
         />
         <button type="submit">Soumettre</button>
-      </StepForm>
+      </Form>
     </>
   );
 };

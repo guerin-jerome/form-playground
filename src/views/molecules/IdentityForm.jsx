@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { StepForm } from "../atoms/StepForm";
+import { Form } from "../atoms/StepForm";
 import { Steps } from "../../tree";
 import { Input } from "../atoms/Input";
 
@@ -12,13 +12,14 @@ export const IdentityForm = () => {
   };
 
   const identityFormInvalidationRules = {
-    firstname: ["name"],
+    firstname: ["name", "surname"],
+    name: ["surname"],
   };
 
   return (
     <>
       <h1>Informations d&apos;identité</h1>
-      <StepForm
+      <Form
         id={Steps.identity.name}
         onSubmit={handleSubmitIdentityForm}
         rules={identityFormInvalidationRules}
@@ -35,8 +36,14 @@ export const IdentityForm = () => {
           type="text"
           options={{ required: true }}
         />
+        <Input
+          label="Surnom :"
+          name="surname"
+          type="text"
+          options={{ required: true }}
+        />
         <button type="submit">Soumettre</button>
-      </StepForm>
+      </Form>
     </>
   );
 };

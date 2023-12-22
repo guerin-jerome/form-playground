@@ -10,16 +10,8 @@ const getOnSessionStorage = ({ storageKey, itemKey }) =>
 const removeOnSessionStorage = ({ storageKey, itemKey }) =>
   sessionStorage.removeItem(`${storageKey}.${itemKey}`);
 
-const setOnSessionStorage = ({ storageKey, itemKey, data }) => {
-  const sessionStorageData =
-    JSON.parse(sessionStorage.getItem(`${storageKey}.${itemKey}`)) || {};
-  const newData = {
-    ...sessionStorageData,
-    ...data,
-  };
-  const stringifyData = JSON.stringify(newData);
-  sessionStorage.setItem(`${storageKey}.${itemKey}`, stringifyData);
-};
+const setOnSessionStorage = ({ storageKey, itemKey, data }) =>
+  sessionStorage.setItem(`${storageKey}.${itemKey}`, JSON.stringify(data));
 
 export const getSessionStorageFormValues = (itemKey) =>
   getOnSessionStorage({

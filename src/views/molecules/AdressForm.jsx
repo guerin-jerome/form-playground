@@ -1,6 +1,6 @@
 import { Steps } from "../../tree";
 import { Input } from "../atoms/Input";
-import { StepForm } from "../atoms/StepForm";
+import { Form } from "../atoms/StepForm";
 import { useNavigate } from "react-router-dom";
 
 export const AdressForm = () => {
@@ -14,7 +14,7 @@ export const AdressForm = () => {
   return (
     <>
       <h1>Informations d&apos;adresse</h1>
-      <StepForm id={Steps.adress.name} onSubmit={handleSubmitAdressForm}>
+      <Form id={Steps.adress.name} onSubmit={handleSubmitAdressForm}>
         <Input
           label="Adresse :"
           name="adress"
@@ -34,7 +34,7 @@ export const AdressForm = () => {
           options={{ required: true }}
         />
         <button type="submit">Soumettre</button>
-      </StepForm>
+      </Form>
     </>
   );
 };
