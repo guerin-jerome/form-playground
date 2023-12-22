@@ -6,9 +6,9 @@ import {
   getSessionStorageFormData,
   getSessionStorageFormValues,
   setSessionStorageFormData,
-  synchronizeLocalAndStorageData,
 } from "../../persistence/sessionStorage";
 import { FormProvider, useForm } from "react-hook-form";
+import { processSynchronization } from "../../synchronize";
 
 export const IdentityForm = () => {
   const formId = Steps.identity.name;
@@ -25,30 +25,18 @@ export const IdentityForm = () => {
 
   const {
     watch,
-    setValue,
     handleSubmit,
     formState: { errors },
   } = methods;
 
   useEffect(() => {
-    const subscription = watch((value, { type, name }) => {
-      if (type === "change") {
-        const newValues = { ...value };
-
-        // Cf. Règle 2/3 - README
-        if (invalidationRules?.[name]) {
-          invalidationRules[name].forEach((element) => {
-            delete newValues[element];
-            setValue(element, undefined);
-          });
-        }
-
-        // Cf. Règle 1 - README
-        synchronizeLocalAndStorageData(formId, newValues);
-      }
+    const subscription = processSynchronization({
+      methods,
+      formId,
+      invalidationRules,
     });
     return () => subscription.unsubscribe();
-  }, [formId, invalidationRules, setValue, watch]);
+  }, [formId, invalidationRules, methods]);
 
   const navigate = useNavigate();
 
@@ -125,7 +113,7 @@ export const IdentityForm = () => {
               label="Surnom :"
               name="surname"
               type="text"
-              options={{ required: true }}
+              options={{ required: true, shouldUnregister: true }}
             />
           )}
           {canDisplayNextStepButton && <button type="submit">Soumettre</button>}

@@ -2,11 +2,9 @@ import { Steps } from "../../tree";
 import { Input } from "../atoms/Input";
 import { useNavigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
-import {
-  getSessionStorageFormValues,
-  synchronizeLocalAndStorageData,
-} from "../../persistence/sessionStorage";
+import { getSessionStorageFormValues } from "../../persistence/sessionStorage";
 import { useEffect } from "react";
+import { processSynchronization } from "../../synchronize";
 
 export const AdressForm = () => {
   const formId = Steps.adress.name;
@@ -19,25 +17,16 @@ export const AdressForm = () => {
     defaultValues: getSessionStorageFormValues(formId),
   });
 
-  const { watch, setValue, handleSubmit } = methods;
+  const { handleSubmit } = methods;
 
   useEffect(() => {
-    const subscription = watch((value, { type, name }) => {
-      if (type === "change") {
-        const newValues = { ...value };
-
-        if (invalidationRules?.[name]) {
-          invalidationRules[name].forEach((element) => {
-            delete newValues[element];
-            setValue(element, undefined);
-          });
-        }
-
-        synchronizeLocalAndStorageData(formId, newValues);
-      }
+    const subscription = processSynchronization({
+      methods,
+      formId,
+      invalidationRules,
     });
     return () => subscription.unsubscribe();
-  }, [formId, invalidationRules, setValue, watch]);
+  }, [formId, invalidationRules, methods]);
 
   const navigate = useNavigate();
 
