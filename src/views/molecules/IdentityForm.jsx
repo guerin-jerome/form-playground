@@ -1,44 +1,19 @@
-import { useNavigate } from "react-router-dom";
-import { Steps } from "../../tree";
 import { Input } from "../atoms/Input";
 import { useEffect, useMemo, useState } from "react";
 import {
   getSessionStorageFormData,
-  getSessionStorageFormValues,
   setSessionStorageFormData,
 } from "../../persistence/sessionStorage";
-import { FormProvider, useForm } from "react-hook-form";
-import { processSynchronization } from "../../synchronize";
+import { useFormContext } from "react-hook-form";
+import { string } from "prop-types";
 
-export const IdentityForm = () => {
-  const formId = Steps.identity.name;
-  // Cf. Règle 2/3 - README
-  const invalidationRules = {
-    firstname: ["name", "surname"],
-    name: ["surname"],
-  };
-
-  const methods = useForm({
-    // Cf. Règle 1 - README
-    defaultValues: getSessionStorageFormValues(formId),
-  });
-
+export const IdentityForm = ({ formId }) => {
   const {
     watch,
-    handleSubmit,
+    trigger,
+    register,
     formState: { errors },
-  } = methods;
-
-  useEffect(() => {
-    const subscription = processSynchronization({
-      methods,
-      formId,
-      invalidationRules,
-    });
-    return () => subscription.unsubscribe();
-  }, [formId, invalidationRules, methods]);
-
-  const navigate = useNavigate();
+  } = useFormContext();
 
   const { firstname, name, surname } = watch();
 
@@ -52,16 +27,8 @@ export const IdentityForm = () => {
     isIdentityFirstPartValid &&
     Object.keys(errors || {}).length === 0;
 
-  const handleSubmitIdentityForm = (data) => {
-    console.debug("Submit identity form with data => ", data);
-    navigate("/birth");
-  };
-
-  const handleClickValidateIdentityFirstPart = () => {
-    if (!!firstname && !!name && Object.keys(errors || {}).length === 0) {
-      setValidityIdentityFirstPart(true);
-    }
-  };
+  const handleClickValidateIdentityFirstPart = () =>
+    trigger().then((isValid) => setValidityIdentityFirstPart(isValid));
 
   useEffect(() => {
     if (!firstname || !name) {
@@ -83,42 +50,43 @@ export const IdentityForm = () => {
 
   return (
     <>
-      <h1>Informations d&apos;identité</h1>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(handleSubmitIdentityForm)}>
-          <Input
-            label="Prénom :"
-            name="firstname"
-            type="text"
-            options={{ required: true }}
-          />
-          <Input
-            label="Nom :"
-            name="name"
-            type="text"
-            options={{ required: true }}
-          />
-          <button
-            style={{ marginBottom: "10px" }}
-            type="button"
-            disabled={!firstname || !name}
-            onClick={handleClickValidateIdentityFirstPart}
-          >
-            Valider
-          </button>
-          <br />
-          {/* Cf. Règle 5 - README */}
-          {isIdentityFirstPartValid && (
-            <Input
-              label="Surnom :"
-              name="surname"
-              type="text"
-              options={{ required: true, shouldUnregister: true }}
-            />
-          )}
-          {canDisplayNextStepButton && <button type="submit">Soumettre</button>}
-        </form>
-      </FormProvider>
+      <Input
+        label="Prénom :"
+        type="text"
+        errorMessage={errors?.firstname?.message}
+        {...register("firstname", { required: "Ce champs est requis" })}
+      />
+      <Input
+        label="Nom :"
+        type="text"
+        errorMessage={errors?.name?.message}
+        {...register("name", { required: "Ce champs est requis" })}
+      />
+      <button
+        style={{ marginBottom: "10px" }}
+        type="button"
+        onClick={handleClickValidateIdentityFirstPart}
+      >
+        Valider
+      </button>
+      <br />
+      {/* Cf. Règle 5 - README */}
+      {isIdentityFirstPartValid && (
+        <Input
+          label="Surnom :"
+          type="text"
+          errorMessage={errors?.surname?.message}
+          {...register("surname", {
+            required: "Ce champs est requis",
+            shouldUnregister: true,
+          })}
+        />
+      )}
+      {canDisplayNextStepButton && <button type="submit">Soumettre</button>}
     </>
   );
+};
+
+IdentityForm.propTypes = {
+  formId: string.isRequired,
 };

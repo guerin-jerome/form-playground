@@ -1,43 +1,50 @@
-import { object, string } from "prop-types";
-import { useFormContext } from "react-hook-form";
+import { func, string } from "prop-types";
+import { forwardRef } from "react";
 
-export const Input = ({ label, name, type, options }) => {
-  const {
-    register,
-    formState: { defaultValues, errors },
-  } = useFormContext();
-
+export const Input = forwardRef(function Input(
+  { label, name, onChange, type, errorMessage },
+  ref
+) {
   return (
     <>
       <label>
         {label}
         <br />
         <input
-          {...register(name, { ...options })}
-          defaultValue={defaultValues?.[name]}
+          ref={ref}
+          name={name}
+          onChange={onChange}
           type={type}
-          style={{ marginBottom: "10px" }}
+          style={{ marginBottom: errorMessage ? 0 : "10px" }}
         />
       </label>
       <br />
-      {errors?.[name] && (
-        <p>
-          {errors?.[name]?.message}
+      {errorMessage && (
+        <p
+          style={{
+            marginTop: "2px",
+            color: "red",
+            fontSize: "0.9em",
+            fontWeight: "bold",
+          }}
+        >
+          {errorMessage}
           <br />
         </p>
       )}
     </>
   );
-};
+});
 
 Input.propTypes = {
   label: string.isRequired,
   name: string.isRequired,
+  errorMessage: string,
   type: string,
-  options: object,
+  onChange: func.isRequired,
 };
 
 Input.defaultProps = {
   type: "text",
-  options: {},
+  errorMessage: undefined,
 };

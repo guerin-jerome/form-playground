@@ -6,10 +6,13 @@ import {
   synchronizeLocalAndStorageData,
 } from "../../persistence/sessionStorage";
 
-/**
- * @deprecated
- */
-export const Form = ({ id, defaultValues, children, onSubmit, rules }) => {
+export const Form = ({
+  id,
+  defaultValues,
+  children,
+  onSubmit,
+  invalidationRules,
+}) => {
   const methods = useForm({
     defaultValues: getSessionStorageFormValues(id) || defaultValues,
   });
@@ -21,8 +24,8 @@ export const Form = ({ id, defaultValues, children, onSubmit, rules }) => {
       if (type === "change") {
         const newValues = { ...value };
 
-        if (rules?.[name]) {
-          rules[name].forEach((element) => {
+        if (invalidationRules?.[name]) {
+          invalidationRules[name].forEach((element) => {
             delete newValues[element];
             setValue(element, undefined);
           });
@@ -32,7 +35,7 @@ export const Form = ({ id, defaultValues, children, onSubmit, rules }) => {
       }
     });
     return () => subscription.unsubscribe();
-  }, [id, rules, setValue, watch]);
+  }, [id, invalidationRules, setValue, watch]);
 
   return (
     <FormProvider {...methods}>
@@ -46,7 +49,7 @@ Form.propTypes = {
   children: node.isRequired,
   defaultValues: object,
   onSubmit: func,
-  rules: object,
+  invalidationRules: object,
 };
 
 Form.defaultProps = {
