@@ -17,36 +17,29 @@ export const IdentityForm = ({ formId }) => {
 
   const { firstname, name, surname } = watch();
 
-  const [isIdentityFirstPartValid, setValidityIdentityFirstPart] = useState(
-    // Cf. Règle 1 - README
-    getSessionStorageFormData(formId)?.isIdentityFirstPartValid
+  const [identityFormState, setIdentityFormState] = useState(
+    surname ? "submissible" : "initial"
   );
 
   const canDisplayNextStepButton =
     !!surname &&
-    isIdentityFirstPartValid &&
+    identityFormState === "submissible" &&
     Object.keys(errors || {}).length === 0;
 
   const handleClickValidateIdentityFirstPart = () =>
-    trigger().then((isValid) => setValidityIdentityFirstPart(isValid));
+    trigger().then((isValid) =>
+      setIdentityFormState(isValid ? "second" : "initial")
+    );
 
   useEffect(() => {
-    if (!firstname || !name) {
-      setValidityIdentityFirstPart(false);
-    }
+    setIdentityFormState("initial");
   }, [firstname, name]);
 
-  // Cf. Règle 4 - README
-  const data = useMemo(
-    () => ({ isIdentityFirstPartValid }),
-    [isIdentityFirstPartValid]
-  );
-
-  // Cf. Règle 4 - README
-  useEffect(
-    () => setSessionStorageFormData({ itemKey: formId, data }),
-    [data, formId]
-  );
+  useEffect(() => {
+    if (surname) {
+      setIdentityFormState("submissible");
+    }
+  }, [surname]);
 
   return (
     <>
@@ -71,7 +64,8 @@ export const IdentityForm = ({ formId }) => {
       </button>
       <br />
       {/* Cf. Règle 5 - README */}
-      {isIdentityFirstPartValid && (
+      {(identityFormState === "second" ||
+        identityFormState === "submissible") && (
         <Input
           label="Surnom :"
           type="text"
