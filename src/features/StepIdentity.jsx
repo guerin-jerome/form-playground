@@ -6,17 +6,29 @@ import { Form } from "../components/molecules/Form";
 import { IdentityForm } from "../layers/IdentityForm";
 
 export const StepIdentity = () => {
-  const formId = Steps.identity.name;
-
-  const { updateItem } = useCRUDPersistence({ pageId: formId });
-
+  /**
+   * Modele de vue
+   */
+  const formId = Steps.identity.name; 
   const invalidationRules = {
     firstname: ["surname"],
     name: ["surname"],
   };
 
+  /**
+   * Hook gestion session storage
+   */
+  const { updateItem } = useCRUDPersistence({ pageId: formId });
+
+  /**
+   * Hook react router
+   */
   const navigate = useNavigate();
 
+  /**
+   * Hanlder lors de la soumission du formulaire
+   * @param {*} data valeur soumise par useForm
+   */
   const handleSubmitIdentityForm = (data) => {
     updateItem({ storageKey: STORAGE_KEYS.formData, data });
     navigate(`/${Steps.birth.name}`);

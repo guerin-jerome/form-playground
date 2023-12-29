@@ -9,28 +9,34 @@ const IDENTITY_FORMSTATE = {
 };
 
 export const IdentityForm = () => {
+  /**
+   * Hook useform
+   */
   const {
     watch,
     trigger,
     register,
     formState: { errors },
   } = useFormContext();
-
   const { firstname, name, surname } = watch();
 
+  /**
+   * Modele de vue
+   */
   const [identityFormState, setIdentityFormState] = useState(
     surname ? IDENTITY_FORMSTATE.submissible : IDENTITY_FORMSTATE.initial
   );
-
   const canDisplaySurnameInput = [
     IDENTITY_FORMSTATE.needMoreInformations,
     IDENTITY_FORMSTATE.submissible,
   ].includes(identityFormState);
-
   const canDisplayNextStepButton =
     identityFormState === IDENTITY_FORMSTATE.submissible &&
     Object.keys(errors || {}).length === 0;
 
+  /**
+   * Handler
+   */
   const handleClickValidateIdentityFirstPart = () =>
     trigger().then((isValid) =>
       setIdentityFormState(
@@ -40,6 +46,9 @@ export const IdentityForm = () => {
       )
     );
 
+  /**
+   * Hook useform
+   */
   useEffect(() => {
     setIdentityFormState(IDENTITY_FORMSTATE.initial);
   }, [firstname, name]);

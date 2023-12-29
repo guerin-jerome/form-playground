@@ -12,34 +12,30 @@ export const Form = ({
   onSubmit,
   invalidationRules,
 }) => {
+  /**
+   * Hook gestion session storage
+   */
   const { getItem } = useCRUDPersistence({ pageId: id });
   const { synchronize } = useSynchronizeLocalAndStorage({ pageId: id });
 
+  /**
+   * Hook useform
+   */
   const methods = useForm({
     defaultValues:
       getItem({ storageKey: STORAGE_KEYS.formValues }) || defaultValues,
   });
-
   const { watch, setValue, handleSubmit } = methods;
+
 
   useEffect(() => {
     const subscription = watch((value, { type, name }) => {
-        console.log("---------------")
-        console.log("change sans type", type)
-        console.log("change", value)
-        console.log("chaninvalidationRulese", invalidationRules)
-        console.log("name", name)
 
         synchronize(value);
-        if (type === "change") {
-
-          if (invalidationRules?.[name]) {
-            invalidationRules[name].forEach((element) => {
-              console.log("element", element)
-              setValue(element, undefined);
-            });
-            console.log("value", value)
-          }
+        if (invalidationRules?.[name] && type === "change") {
+          invalidationRules[name].forEach((element) => {
+            setValue(element, undefined);
+          });
         }
     });
     return () => subscription.unsubscribe();

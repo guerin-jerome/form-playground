@@ -2,6 +2,9 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "../components/atoms/Input";
 
 export const BirthForm = () => {
+  /**
+   * Hook useform
+   */
   const {
     register,
     formState: { errors },

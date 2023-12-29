@@ -3,6 +3,9 @@ import { STORAGE_KEYS } from "../constants/persistence";
 import { useCRUDPersistence } from "../hooks/useCRUDPersistence";
 
 export const Recapitulatif = () => {
+  /**
+   * Hook gestion session storage
+   */
   const { getItem: getIdentityItem } = useCRUDPersistence({
     pageId: Steps.identity.name,
   });
@@ -10,6 +13,9 @@ export const Recapitulatif = () => {
     pageId: Steps.birth.name,
   });
 
+  /**
+   * Modele de vue
+   */
   const { firstname, name, surname } =
     getIdentityItem({ storageKey: STORAGE_KEYS.formData }) || {};
   const { birthdate, birthplace } =
