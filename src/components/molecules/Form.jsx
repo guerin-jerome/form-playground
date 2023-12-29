@@ -24,17 +24,20 @@ export const Form = ({
 
   useEffect(() => {
     const subscription = watch((value, { type, name }) => {
-      if (type === "change") {
-        const newValues = { ...value };
+        console.log("---------------")
+        console.log("change sans type", type)
+        console.log("change", value)
+        console.log("chaninvalidationRulese", invalidationRules)
+        console.log("name", name)
+
+        synchronize(value);
 
         if (invalidationRules?.[name]) {
           invalidationRules[name].forEach((element) => {
-            delete newValues[element];
+            console.log("element", element)
             setValue(element, undefined);
           });
-        }
-
-        synchronize(newValues);
+          console.log("value", value)
       }
     });
     return () => subscription.unsubscribe();

@@ -11,7 +11,7 @@ export const StepIdentity = () => {
   const { updateItem } = useCRUDPersistence({ pageId: formId });
 
   const invalidationRules = {
-    firstname: ["name", "surname"],
+    firstname: ["name"],
     name: ["surname"],
   };
 
