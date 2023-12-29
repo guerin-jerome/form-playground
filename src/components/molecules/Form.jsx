@@ -31,14 +31,16 @@ export const Form = ({
         console.log("name", name)
 
         synchronize(value);
+        if (type === "change") {
 
-        if (invalidationRules?.[name]) {
-          invalidationRules[name].forEach((element) => {
-            console.log("element", element)
-            setValue(element, undefined);
-          });
-          console.log("value", value)
-      }
+          if (invalidationRules?.[name]) {
+            invalidationRules[name].forEach((element) => {
+              console.log("element", element)
+              setValue(element, undefined);
+            });
+            console.log("value", value)
+          }
+        }
     });
     return () => subscription.unsubscribe();
   }, [id, invalidationRules, setValue, watch, synchronize]);
