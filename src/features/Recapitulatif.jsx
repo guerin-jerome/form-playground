@@ -1,13 +1,19 @@
-import { getSessionStorageFormValues } from "../../persistence/sessionStorage";
-import { Steps } from "../../tree";
+import { Steps } from "../constants/course";
+import { STORAGE_KEYS } from "../constants/persistence";
+import { useCRUDPersistence } from "../hooks/useCRUDPersistence";
 
 export const Recapitulatif = () => {
+  const { getItem: getIdentityItem } = useCRUDPersistence({
+    pageId: Steps.identity.name,
+  });
+  const { getItem: getBirthItem } = useCRUDPersistence({
+    pageId: Steps.birth.name,
+  });
+
   const { firstname, name, surname } =
-    getSessionStorageFormValues(Steps.identity.name) || {};
+    getIdentityItem({ storageKey: STORAGE_KEYS.formData }) || {};
   const { birthdate, birthplace } =
-    getSessionStorageFormValues(Steps.birth.name) || {};
-  const { adress, zipcode, city } =
-    getSessionStorageFormValues(Steps.adress.name) || {};
+    getBirthItem({ storageKey: STORAGE_KEYS.formData }) || {};
 
   return (
     <section>
@@ -23,12 +29,6 @@ export const Recapitulatif = () => {
         <ul>
           <li>Date : {birthdate}</li>
           <li>Commune : {birthplace}</li>
-        </ul>
-        <li>Adresse</li>
-        <ul>
-          <li>Adresse : {adress}</li>
-          <li>Commune : {city}</li>
-          <li>Code postal : {zipcode}</li>
         </ul>
       </ul>
     </section>

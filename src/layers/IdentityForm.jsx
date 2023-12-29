@@ -1,13 +1,14 @@
-import { Input } from "../atoms/Input";
-import { useEffect, useMemo, useState } from "react";
-import {
-  getSessionStorageFormData,
-  setSessionStorageFormData,
-} from "../../persistence/sessionStorage";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { string } from "prop-types";
+import { Input } from "../components/atoms/Input";
 
-export const IdentityForm = ({ formId }) => {
+const IDENTITY_FORMSTATE = {
+  initial: "initial",
+  needMoreInformations: "needMoreInformations",
+  submissible: "submissible",
+};
+
+export const IdentityForm = () => {
   const {
     watch,
     trigger,
@@ -18,26 +19,34 @@ export const IdentityForm = ({ formId }) => {
   const { firstname, name, surname } = watch();
 
   const [identityFormState, setIdentityFormState] = useState(
-    surname ? "submissible" : "initial"
+    surname ? IDENTITY_FORMSTATE.submissible : IDENTITY_FORMSTATE.initial
   );
 
+  const canDisplaySurnameInput = [
+    IDENTITY_FORMSTATE.needMoreInformations,
+    IDENTITY_FORMSTATE.submissible,
+  ].includes(identityFormState);
+
   const canDisplayNextStepButton =
-    !!surname &&
-    identityFormState === "submissible" &&
+    identityFormState === IDENTITY_FORMSTATE.submissible &&
     Object.keys(errors || {}).length === 0;
 
   const handleClickValidateIdentityFirstPart = () =>
     trigger().then((isValid) =>
-      setIdentityFormState(isValid ? "second" : "initial")
+      setIdentityFormState(
+        isValid
+          ? IDENTITY_FORMSTATE.needMoreInformations
+          : IDENTITY_FORMSTATE.initial
+      )
     );
 
   useEffect(() => {
-    setIdentityFormState("initial");
+    setIdentityFormState(IDENTITY_FORMSTATE.initial);
   }, [firstname, name]);
 
   useEffect(() => {
     if (surname) {
-      setIdentityFormState("submissible");
+      setIdentityFormState(IDENTITY_FORMSTATE.submissible);
     }
   }, [surname]);
 
@@ -63,9 +72,7 @@ export const IdentityForm = ({ formId }) => {
         Valider
       </button>
       <br />
-      {/* Cf. Règle 5 - README */}
-      {(identityFormState === "second" ||
-        identityFormState === "submissible") && (
+      {canDisplaySurnameInput && (
         <Input
           label="Surnom :"
           type="text"
@@ -79,8 +86,4 @@ export const IdentityForm = ({ formId }) => {
       {canDisplayNextStepButton && <button type="submit">Soumettre</button>}
     </>
   );
-};
-
-IdentityForm.propTypes = {
-  formId: string.isRequired,
 };

@@ -1,10 +1,9 @@
 import { func, node, object, string } from "prop-types";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import {
-  getSessionStorageFormValues,
-  synchronizeLocalAndStorageData,
-} from "../../persistence/sessionStorage";
+import { useCRUDPersistence } from "../../hooks/useCRUDPersistence";
+import { STORAGE_KEYS } from "../../constants/persistence";
+import { useSynchronizeLocalAndStorage } from "../../hooks/useSynchronizeLocalAndStorage";
 
 export const Form = ({
   id,
@@ -13,8 +12,12 @@ export const Form = ({
   onSubmit,
   invalidationRules,
 }) => {
+  const { getItem } = useCRUDPersistence({ pageId: id });
+  const { synchronize } = useSynchronizeLocalAndStorage({ pageId: id });
+
   const methods = useForm({
-    defaultValues: getSessionStorageFormValues(id) || defaultValues,
+    defaultValues:
+      getItem({ storageKey: STORAGE_KEYS.formValues }) || defaultValues,
   });
 
   const { watch, setValue, handleSubmit } = methods;
@@ -31,11 +34,11 @@ export const Form = ({
           });
         }
 
-        synchronizeLocalAndStorageData(id, newValues);
+        synchronize(newValues);
       }
     });
     return () => subscription.unsubscribe();
-  }, [id, invalidationRules, setValue, watch]);
+  }, [id, invalidationRules, setValue, watch, synchronize]);
 
   return (
     <FormProvider {...methods}>
